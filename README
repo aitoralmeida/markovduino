@@ -1,1 +1,4 @@
-Library for Markov Chains in Arduino
+Library for Markov Chains in Arduino.
+
+The examples directory contains a straightforward example of the library usage.
+The tests directory contains some adhoc unit tests for the library.
