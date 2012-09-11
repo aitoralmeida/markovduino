@@ -120,13 +120,21 @@ double * MarkovChain::calculateFirstStatesProbabilities (char* elements, int num
   return firstStateProbs;
 }
 
+int getElementPosition(char element, char* elements, int numOfElements){
+  for (int i = 0; i < numOfElements; i++){
+    if (element == elements[i])
+      return i;
+  }
+}
+
 //******************************************************************************************
 //******* Only the following functions are needed to be called to use Markov Chains ********
 //******************************************************************************************
 
 /*
  * Returns the probabilities for the next states. The probabilities appear in the same order
- * that appear in "elements"*/
+ * that appear in "elements"
+ */
 
 double* MarkovChain::getNextTransitions(char element, char* elements, int numOfElements, char ** sequences, int numSequences ){
   double* probabilities = (double *)malloc(numOfElements*sizeof(double));
@@ -161,5 +169,42 @@ double* MarkovChain::getNextTransitions(char element, char* elements, int numOfE
   free(transitionProbabilityMatrix);
 	
   return probabilities;
+}
+
+/*
+ * Returns the ocurrence probability of a given sequence
+ */
+ 
+double MarkovChain::getSequenceProbability(char* sequence, int seqElementsNum, char* elements, int numOfElements, char ** sequences, int numSequences){
+  double probability = 1.0;
+  
+  int ** transitionMatrix = createTransitionMatrix(elements, numOfElements, sequences, numSequences);;
+  int * rowsTotals = countRowsTotals(transitionMatrix, numOfElements);
+  double **transitionProbabilityMatrix = createTransitionProbabilityMatrix(rowsTotals, transitionMatrix, numOfElements);
+  double * firstStateProbabilities = calculateFirstStatesProbabilities (elements, numOfElements, sequences, numSequences);
+  
+  for (int i = 0; i < seqElementsNum-1; i++) {	
+    		
+    int row = getElementPosition(sequence[i], elements, numOfElements);
+    int col = getElementPosition(sequence[i+1], elements, numOfElements);
+    
+    probability = probability * transitionProbabilityMatrix[row][col];		
+  }
+  int firstElementPos = getElementPosition(sequence[0], elements, numOfElements);
+  probability = firstStateProbabilities[firstElementPos] * probability;
+  
+  for(int i = 0; i < numOfElements; i++)
+    free(transitionMatrix[i]);
+  free(transitionMatrix);
+  
+  free(rowsTotals);
+  
+  for(int i = 0; i < numOfElements; i++)
+    free(transitionProbabilityMatrix[i]);
+  free(transitionProbabilityMatrix);
+  
+  free (firstStateProbabilities);
+  
+  return probability;
 }
 

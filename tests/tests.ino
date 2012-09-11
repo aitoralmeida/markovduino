@@ -339,6 +339,52 @@ void testGetNextTransitions(){
   free(probsA);  
 }
 
+void testGetSequenceProbability(){
+  Serial.println();
+  Serial.println("*** TEST: testGetSequenceProbability ***");
+ 
+  char ** sequences;
+  sequences = (char **) malloc(3*sizeof(char *));
+  for(int i = 0; i < 3; i++)
+    sequences[i] = (char *) malloc(5*sizeof(char));
+ 
+  //Sequence 0
+  sequences[0][0] = 'a';  
+  sequences[0][1] = 'b';  
+  sequences[0][2] = 'b';  
+  sequences[0][3] = 'b';  
+  sequences[0][4] = '\0'; 
+  //Sequence 1
+  sequences[1][0] = 'b';  
+  sequences[1][1] = 'a';  
+  sequences[1][2] = 'b';  
+  sequences[1][3] = 'a';  
+  sequences[1][4] = '\0'; 
+  //Sequence 2
+  sequences[2][0] = 'a';  
+  sequences[2][1] = 'a';  
+  sequences[2][2] = 'b';  
+  sequences[2][3] = 'a';  
+  sequences[2][4] = '\0';  
+
+  char elements [] = {'a', 'b'};
+  
+  char sequence [] = {'a','b','a'};
+  
+  double prob = chain.getSequenceProbability(sequence, 3, elements, 2, sequences, 3);
+		 
+  Serial.print("** Expected value: ");
+  Serial.print((2.0/3.0) * (3.0/4.0) * (3.0/5.0));
+  Serial.print(" actual: "); 
+  Serial.print(prob);
+  Serial.println();
+  
+  for(int i = 0; i < 3; i++)
+    free(sequences[i]);
+  free(sequences);
+
+}
+
 
 void doTests(){
   testGetFirstStates(); 
@@ -349,17 +395,14 @@ void doTests(){
   testCreateTransitionProbabilityMatrix();
   testCalculateFirstStatesProbabilities();
   testGetNextTransitions();
+  testGetSequenceProbability();
 }
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-
+  doTests();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //showMsg();
-  doTests();
-  delay(10000);
 }

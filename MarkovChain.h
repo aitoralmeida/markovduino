@@ -21,6 +21,7 @@ class MarkovChain
 	//******* Only the following functions are needed to be called to use Markov Chains ********
 	//******************************************************************************************
 	double* getNextTransitions(char element, char* elements, int numOfElements, char ** sequences, int numSequences );
+	double getSequenceProbability(char* sequence, int seqElementsNum, char* elements, int numOfElements, char ** sequences, int numSequences);
 };
 
 #endif
