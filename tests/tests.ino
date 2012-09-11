@@ -287,6 +287,58 @@ void testCalculateFirstStatesProbabilities(){
   free(firstStatesProbs);
 }
 
+void testGetNextTransitions(){
+  Serial.println();
+  Serial.println("*** TEST: testGetNextTransitions ***");
+ 
+  char ** sequences;
+  sequences = (char **) malloc(3*sizeof(char *));
+  for(int i = 0; i < 3; i++)
+    sequences[i] = (char *) malloc(5*sizeof(char));
+ 
+  //Sequence 0
+  sequences[0][0] = 'a';  
+  sequences[0][1] = 'b';  
+  sequences[0][2] = 'b';  
+  sequences[0][3] = 'b';  
+  sequences[0][4] = '\0'; 
+  //Sequence 1
+  sequences[1][0] = 'b';  
+  sequences[1][1] = 'a';  
+  sequences[1][2] = 'b';  
+  sequences[1][3] = 'a';  
+  sequences[1][4] = '\0'; 
+  //Sequence 2
+  sequences[2][0] = 'a';  
+  sequences[2][1] = 'a';  
+  sequences[2][2] = 'b';  
+  sequences[2][3] = 'a';  
+  sequences[2][4] = '\0';  
+
+  char elements [] = {'a', 'b'};
+  
+  double* probsA = chain.getNextTransitions('a', elements, 2, sequences, 3);
+  if(probsA == NULL)
+    Serial.println("TEST FAILED: element 'a' does no exits");
+  
+  Serial.print("** Expected value: ");
+  Serial.print(1.0/4.0);
+  Serial.print(" actual: "); 
+  Serial.print(probsA[0]);
+  Serial.println();
+  Serial.print("** Expected value: ");
+  Serial.print(3.0/4.0);
+  Serial.print(" actual: "); 
+  Serial.print(probsA[1]);
+  Serial.println();
+  
+  for(int i = 0; i < 3; i++)
+    free(sequences[i]);
+  free(sequences);
+  
+  free(probsA);  
+}
+
 
 void doTests(){
   testGetFirstStates(); 
@@ -296,6 +348,7 @@ void doTests(){
   testCountRowsTotals();
   testCreateTransitionProbabilityMatrix();
   testCalculateFirstStatesProbabilities();
+  testGetNextTransitions();
 }
 
 void setup() {

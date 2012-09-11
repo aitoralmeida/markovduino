@@ -16,6 +16,11 @@ class MarkovChain
 	int* countRowsTotals(int** transitionMatrix, int numOfElements);
 	double** createTransitionProbabilityMatrix(int* rowsTotals, int** transitionMatrix, int numOfElements);
 	double * calculateFirstStatesProbabilities (char* elements, int numOfElements, char** sequences, int numOfSecuences);
+	
+	//******************************************************************************************
+	//******* Only the following functions are needed to be called to use Markov Chains ********
+	//******************************************************************************************
+	double* getNextTransitions(char element, char* elements, int numOfElements, char ** sequences, int numSequences );
 };
 
 #endif

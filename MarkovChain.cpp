@@ -120,3 +120,46 @@ double * MarkovChain::calculateFirstStatesProbabilities (char* elements, int num
   return firstStateProbs;
 }
 
+//******************************************************************************************
+//******* Only the following functions are needed to be called to use Markov Chains ********
+//******************************************************************************************
+
+/*
+ * Returns the probabilities for the next states. The probabilities appear in the same order
+ * that appear in "elements"*/
+
+double* MarkovChain::getNextTransitions(char element, char* elements, int numOfElements, char ** sequences, int numSequences ){
+  double* probabilities = (double *)malloc(numOfElements*sizeof(double));
+  int row = -1;
+  for (int i = 0; i < numOfElements; i++){
+    if (elements[i] == element && row == -1){
+      row = i;
+    }
+  }
+
+  if (row == -1){
+    return NULL;
+  }
+  
+  int ** transitionMatrix = createTransitionMatrix(elements, numOfElements, sequences, numSequences);;
+  int * rowsTotals = countRowsTotals(transitionMatrix, numOfElements);
+  double ** transitionProbabilityMatrix = createTransitionProbabilityMatrix(rowsTotals, transitionMatrix, numOfElements);
+  
+  for (int i = 0; i < numOfElements; i++) {
+    double prob = transitionProbabilityMatrix[row][i];
+    probabilities[i] = prob;			
+  }
+
+  for(int i = 0; i < numOfElements; i++)
+    free(transitionMatrix[i]);
+  free(transitionMatrix);
+  
+  free(rowsTotals);
+  
+  for(int i = 0; i < numOfElements; i++)
+    free(transitionProbabilityMatrix[i]);
+  free(transitionProbabilityMatrix);
+	
+  return probabilities;
+}
+
